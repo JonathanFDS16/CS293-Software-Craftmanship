@@ -1,0 +1,4 @@
+Checking two condition for errors at the same time is not good because you don't know which one was the error one
+
+Check for Zero == Null
+Objects.requireNonNull();
