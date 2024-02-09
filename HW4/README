@@ -1,0 +1,10 @@
+This project was built with Amazon Corretto JDK 17 17.0.10.
+
+As test units were made with JUNIT 5, all present in the /lib folder.
+
+This choice was made because of compatibility issues with records if using JDK 8.
+
+Make sure to have in the same folder:
+/lib, /src, and /test
+Then open folder as a project
+Run tests.
