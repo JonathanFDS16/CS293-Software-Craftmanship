@@ -1,7 +1,6 @@
 package edu.cwru.jfd69.matrix;
 
 import java.util.Comparator;
-import java.util.IdentityHashMap;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -17,28 +16,14 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
      * First index1 < index2 if row1 < row2.
      * If index1.row == index2.row. Then index1 < index2 if column1 < column2
      */
-    public static final Comparator<Indexes> byRows = (index1, index2) ->
-            compareByRowOrByColumn(index1, index2, true);
+    public static final Comparator<Indexes> byRows = Indexes::byRows;
 
     /**
      * Comparator by Column:
      * First index1 < index2 if column1 < column2.
      * If index1.column == index2.column. Then index1 < index2 if row1 < row2
      */
-    public static final Comparator<Indexes> byColumns = (index1, index2) ->
-            compareByRowOrByColumn(index1, index2, false);
-
-    private static int compareByRowOrByColumn(Indexes index1, Indexes index2, boolean byRows) {
-        int byRow = Integer.compare(index1.row(), index2.row());
-        int byColumn = Integer.compare(index1.column(), index2.column());
-        if (byRows)
-            return ifZeroReturn(byRow, byColumn);
-        return ifZeroReturn(byColumn, byRow);
-    }
-
-    private static int ifZeroReturn(int checkValue, int returnValue) {
-        return checkValue != 0 ? checkValue : returnValue;
-    }
+    public static final Comparator<Indexes> byColumns = Indexes::byColumn;
 
     /**
      * Returns the Indexes with the given row and this column
@@ -80,15 +65,6 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
                 (index) -> getNextIndex(index, to));
     }
 
-    private static Indexes getNextIndex(Indexes currentIndex, Indexes lastIndex) {
-        assert currentIndex != null : "Invalid null currentIndex argument";
-        assert lastIndex != null : "Invalid null lastIndex argument";
-
-        return  currentIndex.column() + 1 == lastIndex.column() ?
-                new Indexes(currentIndex.row() + 1, 0) :
-                new Indexes(currentIndex.row(), currentIndex.column() + 1);
-    }
-
     /**
      * Return a Stream of Indexes with a sequence of Indexes 0,0 --> to, excluding the latter
      * @param size the end index excluding.
@@ -124,6 +100,12 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
         return matrix[row()][column()];
     }
 
+    /**
+     * Return the value at this Indexes
+     * @param matrix the matrix
+     * @return the value S at this Index
+     * @param <S> the element Type
+     */
     public <S> S value(Matrix<Indexes, S> matrix) {
         Objects.requireNonNull(matrix);
 
@@ -138,7 +120,6 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
         return row() == column();
     }
 
-
     @Override
     public int compareTo(Indexes indexes) {
         Objects.requireNonNull(indexes);
@@ -150,4 +131,24 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
         return "(" + row() + ", " + column() + ")";
     }
 
+    private static Indexes getNextIndex(Indexes currentIndex, Indexes lastIndex) {
+        assert currentIndex != null : "Invalid null currentIndex argument";
+        assert lastIndex != null : "Invalid null lastIndex argument";
+
+        return  currentIndex.column() + 1 == lastIndex.column() ?
+                new Indexes(currentIndex.row() + 1, 0) :
+                new Indexes(currentIndex.row(), currentIndex.column() + 1);
+    }
+
+    private static int byColumn(Indexes index1, Indexes index2) {
+        return compareIndexes(index1, index2, index1.column() != index2.column());
+    }
+
+    private static int byRows(Indexes index1, Indexes index2) {
+        return compareIndexes(index1, index2, index1.row() == index2.row());
+    }
+
+    private static int compareIndexes(Indexes index1, Indexes index2, boolean condition) {
+        return condition ? index1.column() - index2.column() : index1.row() - index2.row();
+    }
 }

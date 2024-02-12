@@ -45,7 +45,7 @@ class PeekingIteratorTest {
         while (peekIterator.hasNext()) {
             Map.Entry<Indexes, Integer> expected = it.next();
 
-//            System.out.println(peekIterator.element());
+            System.out.println(peekIterator.element());
             assertEquals(Optional.of(expected), peekIterator.peek());
             assertEquals(expected, peekIterator.element());
             assertTrue(peekIterator.hasNext());
