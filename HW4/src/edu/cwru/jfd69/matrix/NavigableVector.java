@@ -19,7 +19,7 @@ public final class NavigableVector<T> extends AbstractMatrix<Integer, T> {
      * @param <S> The type for the method
      * @throws NullPointerException when vector is null.
      */
-    public static <S> NavigableVector<S> from(Map<Integer, S> vector, S zero) throws NullPointerException {
+    public static <S> NavigableVector<S> from(Map<Integer, S> vector, S zero) {
 
         Objects.requireNonNull(vector);
         Objects.requireNonNull(zero);

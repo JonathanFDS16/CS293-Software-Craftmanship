@@ -126,11 +126,6 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
         return byRows.compare(this, indexes);
     }
 
-    @Override
-    public String toString() {
-        return "(" + row() + ", " + column() + ")";
-    }
-
     private static Indexes getNextIndex(Indexes currentIndex, Indexes lastIndex) {
         assert currentIndex != null : "Invalid null currentIndex argument";
         assert lastIndex != null : "Invalid null lastIndex argument";
@@ -148,7 +143,9 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
         return compareIndexes(index1, index2, index1.row() == index2.row());
     }
 
-    private static int compareIndexes(Indexes index1, Indexes index2, boolean condition) {
-        return condition ? index1.column() - index2.column() : index1.row() - index2.row();
+    private static int compareIndexes(Indexes index1, Indexes index2, boolean compareCondition) {
+        assert index1 != null : "Invalid null index1";
+        assert index2 != null : "Invalid null index2";
+        return compareCondition ? index1.column() - index2.column() : index1.row() - index2.row();
     }
 }

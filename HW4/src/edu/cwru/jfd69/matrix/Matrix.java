@@ -36,6 +36,12 @@ public interface Matrix<I, T> {
      */
     PeekingIterator<Map.Entry<I, T>> peekingIterator();
 
+    /**
+     * Return a NavigableMap with indexes merged by the operation.
+     * @param other the other matrix to be merged
+     * @param op the operation to be applied to the merge
+     * @return the NavigableMap
+     */
     NavigableMap<I, T> merge(Matrix<I, T> other, BinaryOperator<T> op);
 
 }
