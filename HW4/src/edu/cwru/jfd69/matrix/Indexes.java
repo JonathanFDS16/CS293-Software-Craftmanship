@@ -16,7 +16,7 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
      * First index1 < index2 if row1 < row2.
      * If index1.row == index2.row. Then index1 < index2 if column1 < column2
      */
-    public static final Comparator<Indexes> byRows = Indexes::byRows;
+    public static final Comparator<Indexes> byRows = Indexes::byRow;
 
     /**
      * Comparator by Column:
@@ -139,7 +139,7 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
         return compareIndexes(index1, index2, index1.column() != index2.column());
     }
 
-    private static int byRows(Indexes index1, Indexes index2) {
+    private static int byRow(Indexes index1, Indexes index2) {
         return compareIndexes(index1, index2, index1.row() == index2.row());
     }
 
