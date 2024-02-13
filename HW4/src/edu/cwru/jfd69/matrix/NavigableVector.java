@@ -43,7 +43,8 @@ public final class NavigableVector<T> extends AbstractMatrix<Integer, T> {
     public NavigableMap<Integer, T> merge(Matrix<Integer, T> other, BinaryOperator<T> op) {
 
         return MapMerger.merge(this.peekingIterator(), other.peekingIterator(),
-                Integer::compareTo, op, 0, InconsistentZeroException.requireMatching(this, other));
+                Integer::compareTo, op, 0,
+                InconsistentZeroException.requireMatching(this, other));
 
     }
 }

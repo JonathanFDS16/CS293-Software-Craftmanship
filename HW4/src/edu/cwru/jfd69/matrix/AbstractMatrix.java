@@ -25,7 +25,7 @@ public abstract class AbstractMatrix<I, T> implements Matrix<I, T> {
      */
     public T value(I index) throws NullPointerException {
         Objects.requireNonNull(index);
-        return matrix.getOrDefault(index, zero);
+        return representation().getOrDefault(index, zero());
     }
 
     /**

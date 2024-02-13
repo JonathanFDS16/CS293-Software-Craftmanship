@@ -56,7 +56,7 @@ public record Indexes(int row, int column) implements Comparable<Indexes> {
      * @return a Stream of Indexes with the sequence of Indexes in order.
      * @throws IllegalArgumentException if from or to are null objects.
      */
-    public static Stream<Indexes> stream(Indexes from, Indexes to) throws IllegalArgumentException {
+    public static Stream<Indexes> stream(Indexes from, Indexes to) {
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);
         return Stream.iterate(from,

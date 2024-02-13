@@ -3,10 +3,7 @@ package edu.cwru.jfd69.matrix;
 import edu.cwru.jfd69.matrixExceptions.InconsistentZeroException;
 
 import java.io.Serial;
-import java.util.Collections;
-import java.util.NavigableMap;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
@@ -70,6 +67,7 @@ public class NavigableMatrix<T> extends AbstractMatrix<Indexes, T> {
      * @param <S> the element type stored in the matrix
      */
     public static <S> NavigableMatrix<S> constant(int rows, int columns, S value, S zero) {
+        Objects.requireNonNull(value);
         return instance(rows, columns, (indexes -> value), zero);
     }
 
@@ -82,6 +80,7 @@ public class NavigableMatrix<T> extends AbstractMatrix<Indexes, T> {
      * @param <S> the element type stored in the matrix
      */
     public static <S> NavigableMatrix<S> identity(int size, S zero, S identity) {
+        Objects.requireNonNull(identity);
         return instance(size, size, (index -> index.areDiagonal() ? identity : zero), zero);
     }
 
@@ -95,7 +94,8 @@ public class NavigableMatrix<T> extends AbstractMatrix<Indexes, T> {
     public static <S> NavigableMatrix<S> from(NavigableMap<Indexes, S> matrix, S zero) {
         Objects.requireNonNull(matrix);
         Objects.requireNonNull(zero);
-        return new NavigableMatrix<>(matrix, zero);
+
+        return new NavigableMatrix<>(new TreeMap<>(matrix), zero);
     }
 
     /**
@@ -108,12 +108,17 @@ public class NavigableMatrix<T> extends AbstractMatrix<Indexes, T> {
     public static <S> NavigableMatrix<S> from(S[][] matrix, S zero) {
         Objects.requireNonNull(matrix);
         Objects.requireNonNull(zero);
+
         return instance(matrix.length, matrix[0].length, (indexes -> indexes.value(matrix)), zero);
     }
 
     @Override
     public NavigableMap<Indexes, T> merge(Matrix<Indexes, T> other, BinaryOperator<T> op) {
-        return MapMerger.merge(this.peekingIterator(), other.peekingIterator(), Indexes.byRows, op, Indexes.ORIGIN,
+        Objects.requireNonNull(other);
+        Objects.requireNonNull(op);
+
+        return MapMerger.merge(this.peekingIterator(), other.peekingIterator(),
+                Indexes.byRows, op, Indexes.ORIGIN,
                 InconsistentZeroException.requireMatching(this, other));
     }
 
