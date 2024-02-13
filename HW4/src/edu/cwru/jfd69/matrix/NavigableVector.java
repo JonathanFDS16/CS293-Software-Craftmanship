@@ -2,7 +2,10 @@ package edu.cwru.jfd69.matrix;
 
 import edu.cwru.jfd69.matrixExceptions.InconsistentZeroException;
 
-import java.util.*;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.function.BinaryOperator;
 
 public final class NavigableVector<T> extends AbstractMatrix<Integer, T> {

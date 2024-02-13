@@ -2,7 +2,6 @@ package edu.cwru.jfd69.matrix;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
-import java.util.function.Function;
 
 /**
  * Class that implements the merge component to matrices

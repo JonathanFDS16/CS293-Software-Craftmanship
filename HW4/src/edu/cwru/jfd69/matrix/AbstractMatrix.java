@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.function.BinaryOperator;
 
 public abstract class AbstractMatrix<I, T> implements Matrix<I, T> {
 

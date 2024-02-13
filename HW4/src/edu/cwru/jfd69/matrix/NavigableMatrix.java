@@ -3,11 +3,15 @@ package edu.cwru.jfd69.matrix;
 import edu.cwru.jfd69.matrixExceptions.InconsistentZeroException;
 
 import java.io.Serial;
-import java.util.*;
+import java.util.Collections;
+import java.util.NavigableMap;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
-import static edu.cwru.jfd69.matrix.NavigableMatrix.InvalidLengthException.*;
+import static edu.cwru.jfd69.matrix.NavigableMatrix.InvalidLengthException.Cause;
+import static edu.cwru.jfd69.matrix.NavigableMatrix.InvalidLengthException.requireNonEmpty;
 
 public class NavigableMatrix<T> extends AbstractMatrix<Indexes, T> {
 
