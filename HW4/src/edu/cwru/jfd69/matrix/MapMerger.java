@@ -1,8 +1,6 @@
 package edu.cwru.jfd69.matrix;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.NavigableMap;
+import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
@@ -17,28 +15,29 @@ final class MapMerger {
             V zero
             ) {
 
-        // itThis has the all entries of one matrix
-        // itOther has all the entries of another matrix
-        // Both iterators representation are ordered by something else
-        // The comparator will order the way the entries are collected
-        // the Op (Operations) at matrix
-        // K is origin to start
-        // V is zero of the Matrix
-
-        MergeParameters<K, V> parameter = new MergeParameters<>(
-                itThis.element().getKey(),
-                itThis.element().getValue(),
-                itOther.element().getValue());
+        NavigableMap<K, V> newMap = new TreeMap<>(comparator);
+        MergeParameters<K, V> parameter;
 
         while (itThis.hasNext() && itOther.hasNext()) {
             // Make operation
+            parameter = new MergeParameters<>(origin, zero, zero);
 
-            MergeParameters.stepParameter(itThis, itOther, comparator, parameter);
+            parameter = MergeParameters.stepParameter(itThis, itOther, comparator, parameter);
+
+            newMap.put(parameter.index(), op.apply(parameter.x(), parameter.y()));
         }
 
-        MergeParameters.stepParameter(itThis, (kvEntry) -> null/*new Parameter*/);
+        while (itThis.hasNext()) {
+            parameter = new MergeParameters<>(origin, zero, zero);
 
-        return null;
+            MergeParameters<K, V> finalParameter = parameter;
+            parameter = MergeParameters.stepParameter(itThis,
+                    (kvEntry) -> finalParameter.setX(itThis.next()));
+
+            newMap.put(parameter.index(), op.apply(parameter.x(), parameter.y()));
+        }
+
+        return newMap;
     }
 
     private record MergeParameters<K, V>(K index, V x, V y) {
@@ -49,14 +48,29 @@ final class MapMerger {
                 Comparator<? super K> comparator,
                 MergeParameters<K, V> mergeParameters
         ) {
-            return null;
+
+            /*Algorithm;
+            1. Get next Entry<KV> for each iterator
+            2. Get the smallest index using comparator
+            3. if (indexes are the same) then return. Else return the smallest (non-zero, zero)
+            * */
+            int compareResult = comparator.compare(itThis.element().getKey(), itOther.element().getKey());
+
+            if (compareResult == 0)
+                return new MergeParameters<>(itThis.next().getKey(), itThis.next().getValue(), itOther.next().getValue());
+            else if (compareResult < 0) {
+                return mergeParameters.setX(itThis.next());
+            }
+            else {
+                return mergeParameters.setY(itOther.next());
+            }
         }
 
         private static <K, V> MergeParameters<K, V> stepParameter(
                 PeekingIterator<Map.Entry<K, V>> iterator,
                 Function<Map.Entry<K, V>, MergeParameters<K, V>> parameters
         ) {
-            return null;
+            return parameters.apply(iterator.next());
         }
 
         public MergeParameters<K, V> setX(Map.Entry<K, V> contents) {
