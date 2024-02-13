@@ -1,9 +1,9 @@
 package edu.cwru.jfd69.matrix;
 
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Objects;
-import java.util.TreeMap;
+import edu.cwru.jfd69.matrixExceptions.InconsistentZeroException;
+
+import java.util.*;
+import java.util.function.BinaryOperator;
 
 public final class NavigableVector<T> extends AbstractMatrix<Integer, T> {
 
@@ -36,4 +36,11 @@ public final class NavigableVector<T> extends AbstractMatrix<Integer, T> {
         return new NavigableVector<>(newNavMap, zero);
     }
 
+    @Override
+    public NavigableMap<Integer, T> merge(Matrix<Integer, T> other, BinaryOperator<T> op) {
+
+        return MapMerger.merge(this.peekingIterator(), other.peekingIterator(),
+                Integer::compareTo, op, 0, InconsistentZeroException.requireMatching(this, other));
+
+    }
 }

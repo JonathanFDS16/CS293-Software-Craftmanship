@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.BinaryOperator;
 
 public abstract class AbstractMatrix<I, T> implements Matrix<I, T> {
 
@@ -44,7 +45,6 @@ public abstract class AbstractMatrix<I, T> implements Matrix<I, T> {
         return new TreeMap<>(matrix);
     }
 
-    @Override
     public PeekingIterator<Map.Entry<I, T>> peekingIterator() {
         return PeekingIterator.from(representation().entrySet().iterator());
     }

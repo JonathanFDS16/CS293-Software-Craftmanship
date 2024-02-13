@@ -1,7 +1,10 @@
 package edu.cwru.jfd69.matrix;
 
+import edu.cwru.jfd69.matrixExceptions.InconsistentZeroException;
+
 import java.io.Serial;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
 import static edu.cwru.jfd69.matrix.NavigableMatrix.InvalidLengthException.*;
@@ -102,6 +105,12 @@ public class NavigableMatrix<T> extends AbstractMatrix<Indexes, T> {
         Objects.requireNonNull(matrix);
         Objects.requireNonNull(zero);
         return instance(matrix.length, matrix[0].length, (indexes -> indexes.value(matrix)), zero);
+    }
+
+    @Override
+    public NavigableMap<Indexes, T> merge(Matrix<Indexes, T> other, BinaryOperator<T> op) {
+        return MapMerger.merge(this.peekingIterator(), other.peekingIterator(), Indexes.byRows, op, Indexes.ORIGIN,
+                InconsistentZeroException.requireMatching(this, other));
     }
 
     /**

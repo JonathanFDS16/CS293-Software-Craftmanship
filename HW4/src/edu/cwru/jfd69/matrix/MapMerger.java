@@ -16,25 +16,18 @@ final class MapMerger {
             ) {
 
         NavigableMap<K, V> newMap = new TreeMap<>(comparator);
-        MergeParameters<K, V> parameter;
+        MergeParameters<K, V> parameter = new MergeParameters<>(origin, zero, zero);
 
-        while (itThis.hasNext() && itOther.hasNext()) {
-            // Make operation
-            parameter = new MergeParameters<>(origin, zero, zero);
+        while (itThis.hasNext() || itOther.hasNext()) {
+            MergeParameters<K, V> itParameter;
+            if (itThis.hasNext() && itOther.hasNext())
+                itParameter = MergeParameters.stepParameter(itThis, itOther, comparator, parameter);
+            else if (itThis.hasNext())
+                itParameter = MergeParameters.stepParameter(itThis, parameter::setX);
+            else
+                itParameter = MergeParameters.stepParameter(itOther, parameter::setY);
 
-            parameter = MergeParameters.stepParameter(itThis, itOther, comparator, parameter);
-
-            newMap.put(parameter.index(), op.apply(parameter.x(), parameter.y()));
-        }
-
-        while (itThis.hasNext()) {
-            parameter = new MergeParameters<>(origin, zero, zero);
-
-            MergeParameters<K, V> finalParameter = parameter;
-            parameter = MergeParameters.stepParameter(itThis,
-                    (kvEntry) -> finalParameter.setX(itThis.next()));
-
-            newMap.put(parameter.index(), op.apply(parameter.x(), parameter.y()));
+            newMap.put(itParameter.index(), op.apply(itParameter.x(), itParameter.y()));
         }
 
         return newMap;
@@ -49,15 +42,10 @@ final class MapMerger {
                 MergeParameters<K, V> mergeParameters
         ) {
 
-            /*Algorithm;
-            1. Get next Entry<KV> for each iterator
-            2. Get the smallest index using comparator
-            3. if (indexes are the same) then return. Else return the smallest (non-zero, zero)
-            * */
             int compareResult = comparator.compare(itThis.element().getKey(), itOther.element().getKey());
 
             if (compareResult == 0)
-                return new MergeParameters<>(itThis.next().getKey(), itThis.next().getValue(), itOther.next().getValue());
+                return mergeParameters.setX(itThis.next()).setY(itOther.next());
             else if (compareResult < 0) {
                 return mergeParameters.setX(itThis.next());
             }

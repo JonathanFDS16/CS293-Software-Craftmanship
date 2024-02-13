@@ -2,6 +2,7 @@ package edu.cwru.jfd69.matrix;
 
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.function.BinaryOperator;
 
 /**
  * An object that represents a matrix.
@@ -34,5 +35,7 @@ public interface Matrix<I, T> {
      * @return the PeekingIterator for this matrix
      */
     PeekingIterator<Map.Entry<I, T>> peekingIterator();
+
+    NavigableMap<I, T> merge(Matrix<I, T> other, BinaryOperator<T> op);
 
 }

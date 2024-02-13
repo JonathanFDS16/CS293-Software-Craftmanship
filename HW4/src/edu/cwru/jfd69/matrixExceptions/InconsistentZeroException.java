@@ -20,6 +20,7 @@ public class InconsistentZeroException extends Exception {
     }
 
     public InconsistentZeroException(String thisZero, String otherZero) {
+        super("This Zero --> " + thisZero + "  Other Zero --> " + otherZero);
         this.thisZero = thisZero;
         this.otherZero = otherZero;
     }
